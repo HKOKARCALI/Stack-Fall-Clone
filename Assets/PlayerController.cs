@@ -17,6 +17,10 @@ public class PlayerController : MonoBehaviour
 
     public GameObject fireShield;
 
+    [SerializeField]
+    AudioClip win, death, idestory, destory, bounce;
+
+
     public enum PlayerState
     {
         Prepare,
@@ -34,6 +38,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
+    
 
 
     // Update is called once per frame
@@ -115,6 +120,24 @@ public class PlayerController : MonoBehaviour
 
     }
 
+
+    public void shatterObstacles()
+    {
+
+
+        if (invincible)
+        {
+            ScoreManager.intance.addScore(1);
+        }
+        else
+        {
+            ScoreManager.intance.addScore(2);
+        }
+        
+    }
+
+
+
     private void FixedUpdate()
     {
         //
@@ -125,6 +148,7 @@ public class PlayerController : MonoBehaviour
             {
 
                 rb.velocity = new Vector3(0, -100 * Time.fixedDeltaTime * 7, 0);
+                
 
             }
         }
@@ -148,6 +172,8 @@ public class PlayerController : MonoBehaviour
                 {
                    //Destroy(collision.transform.parent.gameObject);
                    collision.transform.parent.GetComponent<ObstacleController>().ShatterAllObstacles();
+                    shatterObstacles();
+                    SoundManager.instance.playSoundFX(idestory, 0.5f);
                 }
                
             }
@@ -157,11 +183,16 @@ public class PlayerController : MonoBehaviour
                 {
                     //Destroy(collision.transform.parent.gameObject);
                     collision.transform.parent.GetComponent<ObstacleController>().ShatterAllObstacles();
+                    shatterObstacles();
+                    SoundManager.instance.playSoundFX(destory, 0.5f);
 
                 }
                 else if (collision.gameObject.tag == "plane")
                 {
                     Debug.Log("GameOver");
+                    ScoreManager.intance.ResetScore();
+                    SoundManager.instance.playSoundFX(death, 0.5f);
+                 
                 }
             }
 
@@ -173,6 +204,7 @@ public class PlayerController : MonoBehaviour
         if(collision.gameObject.tag=="Finish" && playerstate == PlayerState.Playing)
         {
             playerstate = PlayerState.Finish;
+            SoundManager.instance.playSoundFX(win, 0.5f);
         }
 
 
@@ -184,6 +216,8 @@ public class PlayerController : MonoBehaviour
         if (!carpa || collision.gameObject.tag == "Finish")
         {
             rb.velocity = new Vector3(0, 50 * Time.deltaTime * 5, 0);
+            SoundManager.instance.playSoundFX(bounce, 0.5f);
+
         }
     }
 
