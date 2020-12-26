@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -26,7 +27,10 @@ public class PlayerController : MonoBehaviour
     public int currentObstacleNumber;
     public int totalObstacleNumber;
 
-    
+
+    public Image InvictableSlider;
+    public GameObject InvictableOBJ;
+
 
     public enum PlayerState
     {
@@ -95,18 +99,41 @@ public class PlayerController : MonoBehaviour
             }
 
 
+            if (currentTime >= 0.15f || InvictableSlider.color == Color.red)
+            {
+                InvictableOBJ.SetActive(true);
+            }
+            else
+            {
+                InvictableOBJ.SetActive(false);
+            }
+            
+            
+            
             if (currentTime >= 1)
             {
                 currentTime = 1;
                 invincible = true;
                 Debug.Log("invincible");
+                InvictableSlider.color=Color.red;
             }
             else if (currentTime <= 0)
             {
                 currentTime = 0;
                 invincible = false;
                 Debug.Log("-----------");
+                InvictableSlider.color=Color.white;
             }
+
+            if ( InvictableOBJ.activeInHierarchy)
+            {
+                InvictableSlider.fillAmount = currentTime / 1;
+            }
+
+           
+            
+            
+            
         }
 
 
