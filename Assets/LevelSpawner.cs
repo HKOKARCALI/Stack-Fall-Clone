@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class LevelSpawner : MonoBehaviour
 {
@@ -19,10 +21,12 @@ public class LevelSpawner : MonoBehaviour
     float obstacleNumber = 0;
 
 
-    void Start()
+   
+
+    void Awake()
     {
         level = PlayerPrefs.GetInt("Level", 1);
-        
+      
 
         randomObstaclegenerator();
         float randomNumber = Random.value;

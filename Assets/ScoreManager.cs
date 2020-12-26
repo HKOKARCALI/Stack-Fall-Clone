@@ -10,13 +10,14 @@ public class ScoreManager : MonoBehaviour
     public static ScoreManager intance;
 
     public int score;
-    public Text scoreTXT;
+
+    private Text scoreText;
 
     private void Awake()
     {
 
         makeSingleton();
-
+        scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
     }
 
     private void makeSingleton()
@@ -40,7 +41,10 @@ public class ScoreManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (scoreText == null)
+        {
+            scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
+        }
     }
 
     public void addScore(int value)
@@ -50,7 +54,8 @@ public class ScoreManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("HighScore", score);
         }
-        Debug.Log("score>> " +  score);
+
+        scoreText.text = score.ToString();
     }
 
     public void ResetScore()

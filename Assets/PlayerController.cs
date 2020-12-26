@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,7 +21,12 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     AudioClip win, death, idestory, destory, bounce;
+    
+    
+    public int currentObstacleNumber;
+    public int totalObstacleNumber;
 
+    
 
     public enum PlayerState
     {
@@ -34,11 +41,16 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+
+        totalObstacleNumber = FindObjectsOfType<ObstacleController>().Length;
+
     }
 
-
-    
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        currentObstacleNumber = 0;
+    }
 
 
     // Update is called once per frame
@@ -123,15 +135,16 @@ public class PlayerController : MonoBehaviour
 
     public void shatterObstacles()
     {
-
-
+        
+        
         if (invincible)
         {
-            ScoreManager.intance.addScore(1);
+            
+            ScoreManager.intance.addScore(2);
         }
         else
         {
-            ScoreManager.intance.addScore(2);
+            ScoreManager.intance.addScore(1);
         }
         
     }
@@ -171,9 +184,10 @@ public class PlayerController : MonoBehaviour
                 if (collision.gameObject.tag == "enemy" || collision.gameObject.tag == "plane")
                 {
                    //Destroy(collision.transform.parent.gameObject);
-                   collision.transform.parent.GetComponent<ObstacleController>().ShatterAllObstacles();
+                    collision.transform.parent.GetComponent<ObstacleController>().ShatterAllObstacles();
                     shatterObstacles();
                     SoundManager.instance.playSoundFX(idestory, 0.5f);
+                    currentObstacleNumber++;
                 }
                
             }
@@ -185,6 +199,7 @@ public class PlayerController : MonoBehaviour
                     collision.transform.parent.GetComponent<ObstacleController>().ShatterAllObstacles();
                     shatterObstacles();
                     SoundManager.instance.playSoundFX(destory, 0.5f);
+                    currentObstacleNumber++;
 
                 }
                 else if (collision.gameObject.tag == "plane")
@@ -192,15 +207,20 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("GameOver");
                     ScoreManager.intance.ResetScore();
                     SoundManager.instance.playSoundFX(death, 0.5f);
-                 
+                   
                 }
             }
 
-
+            
+            
           
            
         }  
         
+        
+       FindObjectOfType<GameUI>().LevelSliderFill(currentObstacleNumber /(float)totalObstacleNumber);
+        
+
         if(collision.gameObject.tag=="Finish" && playerstate == PlayerState.Playing)
         {
             playerstate = PlayerState.Finish;
