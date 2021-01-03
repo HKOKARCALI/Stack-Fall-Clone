@@ -30,7 +30,8 @@ public class PlayerController : MonoBehaviour
 
     public Image InvictableSlider;
     public GameObject InvictableOBJ;
-
+    public GameObject gameOverUI;
+    public GameObject finishUI;
 
     public enum PlayerState
     {
@@ -54,6 +55,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         currentObstacleNumber = 0;
+       
     }
 
 
@@ -137,13 +139,13 @@ public class PlayerController : MonoBehaviour
         }
 
 
-        if (playerstate == PlayerState.Prepare)
+        /*if (playerstate == PlayerState.Prepare)
         {
             if (Input.GetMouseButton(0))
             {
                 playerstate = PlayerState.Playing;
             }
-        }
+        }*/
 
         if (playerstate == PlayerState.Finish)
         {
@@ -193,8 +195,6 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-       
-
 
     }
 
@@ -232,9 +232,14 @@ public class PlayerController : MonoBehaviour
                 else if (collision.gameObject.tag == "plane")
                 {
                     Debug.Log("GameOver");
+                    gameOverUI.SetActive(true);
+                    playerstate = PlayerState.Finish;
+                    gameObject.GetComponent<Rigidbody>().isKinematic = true;
                     ScoreManager.intance.ResetScore();
                     SoundManager.instance.playSoundFX(death, 0.5f);
-                   
+                    
+                    
+
                 }
             }
 
@@ -245,13 +250,15 @@ public class PlayerController : MonoBehaviour
         }  
         
         
-       FindObjectOfType<GameUI>().LevelSliderFill(currentObstacleNumber /(float)totalObstacleNumber);
+       FindObjectOfType<GameUIController>().LevelSliderFill(currentObstacleNumber /(float)totalObstacleNumber);
         
 
         if(collision.gameObject.tag=="Finish" && playerstate == PlayerState.Playing)
         {
             playerstate = PlayerState.Finish;
             SoundManager.instance.playSoundFX(win, 0.5f);
+            finishUI.SetActive(true);
+            finishUI.transform.GetChild(0).GetComponent<Text>().text = "Level"+ PlayerPrefs.GetInt("Level",1);
         }
 
 
@@ -264,6 +271,7 @@ public class PlayerController : MonoBehaviour
         {
             rb.velocity = new Vector3(0, 50 * Time.deltaTime * 5, 0);
             SoundManager.instance.playSoundFX(bounce, 0.5f);
+            
 
         }
     }

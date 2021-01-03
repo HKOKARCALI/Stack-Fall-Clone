@@ -20,7 +20,8 @@ public class LevelSpawner : MonoBehaviour
 
     float obstacleNumber = 0;
 
-
+    public Material plateMat, baseMat;
+    public MeshRenderer playerMeshRenderer;
    
 
     void Awake()
@@ -84,7 +85,12 @@ public class LevelSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetMouseButtonDown(0))
+        {
+            plateMat.color = Random.ColorHSV(0, 1, 0.5f, 1, 1, 1);
+            baseMat.color = plateMat.color + Color.gray;
+            playerMeshRenderer.material.color = baseMat.color;
+        }
     }
 
     public void randomObstaclegenerator()
